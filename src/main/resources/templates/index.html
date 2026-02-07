@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Home</title></head>
+<body>
+    <h1>Coffee Shop Simulator</h1>
+    <form method="post" action="/placeOrder">
+        <label>Drinks (comma separated, e.g. COLD_BREW,ESPRESSO):</label>
+        <input type="text" name="drinks" required/><br/>
+        <label>Loyalty Gold:</label>
+        <input type="checkbox" name="loyalty"/><br/>
+        <button type="submit">Place Order</button>
+    </form>
+    <p th:if="${error}" style="color:red;" th:text="${error}"></p>
+    <a href="/queue">View Queue</a>
+    <a href="/simulate">Run Batch Simulation</a>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Queue Status</title>
+</head>
+<body>
+    <h1>Current Queue Status</h1>
+
+    <h2>Waiting Orders</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Arrival</th>
+            <th>Drinks</th>
+            <th>Priority Score</th>
+            <th>Estimated Wait</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Skipped</th>
+        </tr>
+        <tr th:each="order : ${waitingOrders}">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.arrivalTime}"></td>
+            <td th:text="${#strings.listJoin(order.drinks, ', ')}"></td>
+            <td th:text="${order.priorityScore}"></td>
+            <td th:text="${order.estimatedWait} + ' min'"></td>
+            <td th:text="${order.reason}"></td>
+            <td th:text="${order.status}"></td>
+            <td th:text="${order.skippedCount}"></td>
+            <td th:if="${order.estimatedWait > 8}" style="color:red;">Approaching timeout!</td>
+            <td th:unless="${order.estimatedWait > 8}">OK</td>
+        </tr>
+    </table>
+
+    <h2>Barista Status</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Current Workload (min)</th>
+            <th>Available At</th>
+        </tr>
+        <tr th:each="barista : ${baristas}">
+            <td th:text="${barista.id}"></td>
+            <td th:text="${barista.currentWorkload}"></td>
+            <td th:text="${barista.availableTime}"></td>
+        </tr>
+    </table>
+    <p>Current time: <span th:text="${currentTime}"></span></p>
+    <a href="/">Back to Home</a>
+</body>
+</html>

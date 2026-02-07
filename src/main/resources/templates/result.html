@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulation Results</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        .card { border: 1px solid #ddd; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        h1 { color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <h1>Simulation Results</h1>
+    <div class="card">
+        <p><strong>Average Customer Wait Time:</strong> <span th:text="${result.averageWaitTimeMinutes} + ' minutes'"></span></p>
+        <p><strong>Timeout Rate (wait >10 min):</strong> <span th:text="${result.timeoutRatePercent} + ' %'"></span></p>
+        <p><strong>Workload Balance (Std Dev):</strong> <span th:text="${result.workloadBalanceStdDev} + ' minutes'"></span></p>
+        <p><strong>Fairness Violation Rate:</strong> <span th:text="${result.fairnessViolationRatePercent} + ' %'"></span></p>
+        <p><strong>Orders Processed:</strong> <span th:text="${completedOrdersCount}"></span></p>
+    </div>
+    <a href="/">Run Again</a>
+    <h2>Sample Orders</h2>
+    <table border="1">
+        <tr><th>ID</th><th>Arrival</th><th>Drinks</th><th>Wait (min)</th><th>Priority</th></tr>
+        <tr th:each="order : ${sampleOrders}">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.arrivalTime}"></td>
+            <td th:text="${#strings.listJoin(order.drinks, ', ')}"></td>
+            <td th:text="${#numbers.numberFormat(#calcs.between(order.arrivalTime, order.completionTime, 'MINUTES'))}"></td>
+            <td th:text="${order.priorityScore}"></td>
+        </tr>
+    </table>
+</body>
+</html>
