@@ -1,17 +1,190 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Home</title></head>
+<head>
+    <title>Coffee Shop Simulator</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .collapsible {
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .collapsible::before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+        }
+
+        .collapsible.open::before {
+            content: "▼";
+        }
+
+        .content {
+            display: none;
+            margin-left: 15px;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".collapsible").forEach(header => {
+                header.addEventListener("click", () => {
+                    header.classList.toggle("open");
+                    const content = header.nextElementSibling;
+                    content.style.display =
+                        content.style.display === "block" ? "none" : "block";
+                });
+            });
+        });
+    </script>
+    <script>
+        function validateDrinks() {
+        const checked =
+            document.querySelectorAll('input[name="drinks"]:checked').length;
+        if (checked === 0) {
+            alert("Please select at least one drink.");
+            return false;
+        }
+        return true;
+        }
+    </script>
+</head>
 <body>
-    <h1>Coffee Shop Simulator</h1>
-    <form method="post" action="/placeOrder">
-        <label>Drinks (comma separated, e.g. COLD_BREW,ESPRESSO):</label>
-        <input type="text" name="drinks" required/><br/>
-        <label>Loyalty Gold:</label>
-        <input type="checkbox" name="loyalty"/><br/>
-        <button type="submit">Place Order</button>
-    </form>
-    <p th:if="${error}" style="color:red;" th:text="${error}"></p>
-    <a href="/queue">View Queue</a>
-    <a href="/simulate">Run Batch Simulation</a>
+    <h1>Bean & Brew Café - Smart Queuing System</h1>
+
+    <!-- Order Placement Form with Drop-Down -->
+    <div class="card">
+        <h2>Place Order</h2>
+
+        <form method="post"
+            action="/placeOrder"
+            onsubmit="return validateDrinks()"
+            class="order-form">
+
+            <label>Select Drinks:</label><br/>
+
+            <div class="drink-grid">
+                <label th:each="type : ${drinkTypes}">
+                    <input type="checkbox"
+                        name="drinks"
+                        th:value="${type.name}">
+                    <span th:text="${type.name}"></span>
+                </label>
+            </div>
+
+            <label class="inline">
+                <input type="checkbox" name="loyalty">
+                Loyalty Gold
+            </label>
+
+            <br/><br/>
+            <button type="submit">Place Order</button>
+        </form>
+    </div>
+
+    <!-- Current Queue -->
+    <div class="card">
+        <h2>Current Orders Queue</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Arrival</th>
+                <th>Drinks</th>
+                <th>Priority</th>
+                <th>Estimated Time (min)</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Skipped</th>
+            </tr>
+            <tr th:each="order : ${waitingOrders}">
+                <td th:text="${order.id}"></td>
+                <td th:text="${order.arrivalTime}"></td>
+                <td th:text="${#strings.listJoin(order.drinks, ', ')}"></td>
+                <td th:text="${order.priorityScore}"></td>
+                <td th:text="${order.estimatedWait}"></td>
+                <td th:text="${order.reason}"></td>
+                <td th:text="${order.status}" th:class="'status-' + ${order.status}"></td>
+                <td th:text="${order.skippedCount}"></td>
+            </tr>
+        </table>
+    </div>
+
+    <h3 class="collapsible">Drink-wise Stats</h3>
+    <div class="content">
+    <table>
+    <tr>
+        <th>Drink</th>
+        <th>No. of Orders</th>
+        <th>Avg Wait (min)</th>
+    </tr>
+    <tr th:each="entry : ${drinkStats}">
+        <td th:text="${entry.key}"></td>
+        <td th:text="${entry.value.count}"></td>
+        <td th:text="${#numbers.formatDecimal(entry.value.avgWait,1,2)}"></td>
+    </tr>
+    </table>
+    </div>
+
+    <!-- Barista Status -->
+    <div class="card">
+        <h2>Barista Status</h2>
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Workload (min)</th>
+                <th>Available At</th>
+            </tr>
+            <tr th:each="barista : ${baristas}">
+                <td th:text="${barista.id}"></td>
+                <td th:text="${barista.currentWorkload}"></td>
+                <td th:text="${barista.availableTime}"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Stats from 100 Test Cases -->
+    <div class="card">
+        <h3 class="collapsible">Stats from 100 Test Cases</h3>
+        <div class="content">
+        <table border="1">
+            <tr>
+                <th>Test Case</th>
+                <th>Avg Waiting Time (min)</th>
+                <th>Barista 1 Workload (min)</th>
+                <th>Barista 2 Workload (min)</th>
+                <th>Barista 3 Workload (min)</th>
+                <th>No. of Complaints</th>
+                <th>Drink Breakdown</th>
+            </tr>
+            <tr th:each="result, iter : ${testResults}">
+                <td th:text="${iter.index + 1}"></td>
+                <td th:text="${result.averageWaitTimeMinutes}"></td>
+                <td th:text="${result.baristaWorkloads[1]}"></td>
+                <td th:text="${result.baristaWorkloads[2]}"></td>
+                <td th:text="${result.baristaWorkloads[3]}"></td>
+                <td th:text="${result.numComplaints}"></td>
+                <td>
+                    <span th:each="entry : ${result.drinkCounts}">
+                        <span th:text="${entry.key}"></span>:
+                        <span th:text="${entry.value}"></span>&nbsp;
+                    </span>
+                </td>
+            </tr>
+        </table>
+        <h4>Drink Breakdown (100 Simulations)</h4>
+        <table>
+        <tr>
+            <th>Drink</th>
+            <th>Count</th>
+        </tr>
+        <tr th:each="entry : ${drinkBreakdown100}">
+            <td th:text="${entry.key}"></td>
+            <td th:text="${entry.value}"></td>
+        </tr>
+        </table>
+    </div>
+    <a class="action-link" href="/simulate">▶ Run Single Simulation</a>
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.hackathon.coffee_shop_dilemma.model;
 
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Data
@@ -9,19 +10,33 @@ public class Order {
     private Long id;
     private LocalDateTime arrivalTime;
     private List<DrinkType> drinks;
-    private boolean loyaltyGold;  // renamed from isLoyaltyGold for consistency
+    private boolean loyaltyGold;
     private LocalDateTime assignedTime;
     private LocalDateTime completionTime;
     private int skippedCount = 0;
-    private double priorityScore;
+    private int priorityScore;
     private String status = "PENDING";
+    private int estimatedWait;
+    private String reason;
+    private boolean completed;
+    private boolean forceServe;
+    private Long baristaId;
+    private long waitTimeMinutes;
 
-    // Transient fields for display only (not persisted)
-    private transient int estimatedWait;
-    private transient String reason;
 
     public int getEstimatedWait() {
         return estimatedWait;
+    }
+
+    public int totalPrepTime() {
+        return drinks.stream()
+                .mapToInt(DrinkType::getPrepTimeMinutes)
+                .sum();
+    }
+
+
+    public long waitMinutes(LocalDateTime now) {
+        return ChronoUnit.MINUTES.between(arrivalTime, now);
     }
 
     public void setEstimatedWait(int estimatedWait) {

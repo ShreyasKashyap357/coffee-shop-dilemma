@@ -1,0 +1,115 @@
+/* ---------- GLOBAL ---------- */
+body {
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #0f172a; /* slate-900 */
+    color: #e5e7eb; /* gray-200 */
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2 {
+    color: #f8fafc;
+    margin-bottom: 10px;
+}
+
+a {
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- CARDS ---------- */
+.card {
+    background: #020617; /* dark slate */
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* ---------- FORMS ---------- */
+.order-form label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.order-form select {
+    width: 100%;
+    background: #020617;
+    color: #e5e7eb;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.order-form button {
+    margin-top: 15px;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #38bdf8, #6366f1);
+    border: none;
+    border-radius: 10px;
+    color: #020617;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.order-form button:hover {
+    opacity: 0.9;
+}
+
+/* ---------- TABLES ---------- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th {
+    background: #020617;
+    color: #38bdf8;
+    text-align: left;
+    padding: 10px;
+    border-bottom: 2px solid #334155;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #1e293b;
+    font-size: 14px;
+}
+
+tr:hover {
+    background: rgba(56,189,248,0.05);
+}
+
+/* ---------- STATUS COLORS ---------- */
+.status-PENDING {
+    color: #fbbf24; /* amber */
+    font-weight: bold;
+}
+
+.status-COMPLETED {
+    color: #22c55e; /* green */
+    font-weight: bold;
+}
+
+/* ---------- BADGES / SMALL TEXT ---------- */
+small {
+    color: #94a3b8;
+}
+
+/* ---------- FOOTER LINKS ---------- */
+.action-link {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 14px;
+    background: #020617;
+    border-radius: 8px;
+    border: 1px solid #334155;
+}
